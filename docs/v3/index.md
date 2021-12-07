@@ -1,36 +1,48 @@
-<!-- remove all comments before releasing -->
-<!-- This is the name of the module as it will appear in GenePatter, and its version, for clarity -->
-# ExampleModule (v2)
+# NMFClustering (v3)
 
-<!-- A brief text description of the module, usually one sentence in length. -->
-**Description**: This is an example GenePattern module written in Python 3. It can be used as a template for future modules. It reads a file and potentially adds a line of text
+**Description**: Non-negative Matrix Factorization Consensus Clustering
 
-<!-- This field is for the author or creator of the module. If the algorithm of the module is from a published paper, this is usually the first or corresponding author from the paper. If the module algorithm is unpublished, this is usually the developer of the module itself. This field can simply be a name of a person or group. -->
-**Authors**: Edwin F. Juarez; UCSD - Mesirov Lab, UCSD; Barbara Hill - Mesirov Lab, Broad Institute
 
-<!--This field is used for responding to help requests for the module, and should be an email address or a link to a website with contact information or a help forum. -->
+**Authors**: Pablo Tamayo (Broad Institute)  with
+contributions from Jean-Philippe Brunet(Broad Institute), Kenneth Yoshimoto (San Diego Supercomputing Center) and Ted Liefeld (University of California San Diego). Parallel NMF Implementation from https://github.com/bioinfo-cnb/bionmf-gpu
+
 **Contact**: [Forum Link](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!forum/genepattern-help)
 
-<!-- All modules have a version number associated with them (the last number on the LSID) that is used to differentiate between modules of the same name for reproducibility purposes. However, for publicly released software packages that are wrapped as GenePattern modules, sometimes this version number will be different that the version number of the algorithm itself (e.g. TopHat v7 in GenePattern uses version 2.0.8b of the TopHat algorithm). Since this information is often important to the user, the algorithm version field is an optional attribute that can be used to specify this different version number. Remove this field if not applicable -->
-**Algorithm Version**: _OPTIONAL_ and Not applicable for this particular module
 
-<!-- Why use this module? What does it do? If this is one of a set of modules, how does this module fit in the set? How does it work? write overview as if you are explaining to a novice. Include any links or images which would serve to clarify -->
 ## Summary
 
-This is an example GenePattern module written in [Python 3](https://www.python.org/download/releases/3.0/).
-It can be used as a template for future modules. It reads a file and potentially adds a line of text.
+Non-negative matrix factorization (NMF) is an unsupervised learning algorithm [1]
+that has been shown to identify molecular patterns when applied to gene expression data [2].
+Rather than separating gene clusters based on distance computation, NMF detects contextdependent patterns of gene expression in complex biological systems.
+The basic principle of dimensionality reduction via matrix factorization operates as follows:
+given an N x M data matrix A with non-negative entries, the NMF algorithm iteratively
+computes an approximation, A ~ WH, where W is an N x k matrix, H is a k x M matrix, and
+both are constrained to have positive entries. For DNA microarrays, N, the number of genes,
+is typically in the thousands. M, the number of experiments, rarely exceeds a hundred, while
+k, the number of classes to be determined depends on the heterogeneity of the dataset. The
+algorithm starts with randomly initialized matrices of the appropriate size, W and H. These are
+iteratively updated to minimize the Euclidean distance between V and WH or a divergence
+norm [3]. The program also computes row and column factor memberships according to
+maximum amplitudes. This membership information is also used to sort the output matrices
+according the row and column membership (the row and columns are then relabeled:
+<name>_f<NMF factor>.
+
 
 <!-- appropriate papers should be cited here -->
 ## References
+1. Lee, D.D and Seung, H.S. (1999), ‘Learning the parts of objects by nonnegative matrix factorization’, Nature 401, 788-793.
+2. Jean-Philippe Brunet, Pablo Tamayo, Todd Golub, Jill Mesirov (2004). Matrix
+Factorization for Molecular Pattern Recognition, PNAS 101, 4164-4169.
+3. Lee, D.D., and Seung, H.S., (2001), ‘Algorithms for Non-negative Matrix
+Factorization’, Adv. Neural Info. Proc. Syst. 13, 556-562.
+4. E. Mejía-Roa, D. Tabas-Madrid, J. Setoain, C. García, F. Tirado and A. Pascual-Montano. NMF-mGPU: Non-negative matrix factorization on multi-GPU systems. BMC Bioinformatics 2015, 16:43. doi:10.1186/s12859-015-0485-4 [http://www.biomedcentral.com/1471-2105/16/43]
 
-<!-- links to your source repository **specific to the release version**, the Docker image used by the module (as specified in your manifest), and (if applicable) the sha link to the Dockerfile used to build your Docker image -->
+
 ## Source Links
-* [The GenePattern ExampleModule v2 source repository](https://github.com/genepattern/ExampleModule/tree/v2)
-* ExampleModule v2 uses the [genepattern/example-module:2 Docker image](https://hub.docker.com/layers/150060459/genepattern/example-module/2/images/sha256-ae4fffff67672e46b251f954ad226b7ad99403c456c1c19911b6ac82f1a27f2f?context=explore)
-* [The Dockerfile used to build that image is here.](https://github.com/genepattern/ExampleModule/blob/v2/Dockerfile)
+* [The GenePattern NMFClustering source repository](https://github.com/genepattern/NMFClustering)
+* NMFClustering uses the [NMF-mGPU implementation](https://github.com/bioinfo-cnb/bionmf-gpu)
 
 ## Parameters
-<!-- short description of the module parameters and their default values, as well as whether they are required -->
 
 | Name | Description <!--short description--> | Default Value |
 ---------|--------------|----------------
@@ -39,45 +51,53 @@ It can be used as a template for future modules. It reads a file and potentially
 | message_to_add  | What message to add (if any) |
 | output_filename * | The basename to use for output file (no need to add ".txt" at the end) |
 
+| dataset.filename * | Input dataset (gct) | |
+| k.initial * |Initial value of K. | 2 |
+| k.final * | Final value of K. |  5  |
+| num.clusterings * | Number of clusterings to perform for each value of K. | 20 |
+| max.num.iterations * | The maximum number of iterations to perform for each clustering run for each value of K. This number may not be reached depending on the stability of the clustering solution and the settings of stop convergence and stop frequency. | Default: 2000 |
+| random.seed * | Random seed used to initialize W and H matrices by the random number generator. e.g. 4585, 4567, 5980. This may be set to provide repeatable results for given parameter inputs even though the algorithm is properly random. |  123456789 |
+| output.file.prefix * | Prefix to prepend to all output file names. | <dataset.filename_basename   |
+| stop.convergence * | How many "no change" checks are needed to stop NMF iterations before max iterations is reached (convergence). Iterations will stop after this many “no change” checks report no changes. | 40 |
+| stop.frequency * | Frequency of "no change" checks. NMFConsensus will check for changes every ‘stop frequency’ iterations. | 10 |
+
 \*  required
 
 ## Input Files
-<!-- longer descriptions of the module input files. Include information about format and/or preprocessing...etc -->
-
-1. filename  
-    A long form explanation of the parameter. For example: This is the file which will be read in by the python script and to which text will be added, if add_custom_message is set to true. The parameter expects a text file with a .txt extension (e.g. file.txt)
+1. dataset.filename  
+   Input dataset in GCT format.
     
 ## Output Files
-<!-- list and describe any files output by the module -->
 
-1. \<output_filename\>.txt  
-    The input file plus any text you added, if you chose to add text.
-2. stdout.txt
-    This is standard output from the Python script. Sometimes helpful for debugging.
+1. membership.gct: membership results for samples at all values of K
+2. cophenetic.txt: cophenetic values for each K
+3. cophenetic.plot.pdf: plot of cophenetic for each value of K
+4. consensus.k.#.gct (for each value of K): consensus matrix for k=#
+5. consensus.plot.k#.pdf (for each value of K): plot of consensus matrix for k=#
+6. graphs.k#.pdf (for each value of K): Plots of the ordered consensus matrix and ordered
+linkage tree and sample plots of NMF convergence, W matrix, H matrix (ordered and
+unordered), metagenes (ordered and unordered) 
+
 
 ## Example Data
-<!-- provide links to example data so that users can see what input & output should look like and so that they and we can use it to test -->
 
 Input:  
-[data_placeholder.txt](https://github.com/genepattern/ExampleModule/blob/v2/data/data_placeholder.txt)
+[BRCA_DESeq2_normalized_20783x40.gct](https://github.com/genepattern/NMFClustering/blob/develop/data/BRCA_DESeq2_normalized_20783x40.gct)
 
 Output:  
-[created_file_ground_truth.txt](https://github.com/genepattern/ExampleModule/blob/v2/gpunit/output/basic_test/created_file_ground_truth.txt)
 
 
 ## Requirements
-<!--This section is typically used to list any special requirements for running the module, such as, language/operating system requirements and Docker images. -->
 
-Requires the [genepattern/example-module:2 Docker image](https://hub.docker.com/layers/150060459/genepattern/example-module/2/images/sha256-ae4fffff67672e46b251f954ad226b7ad99403c456c1c19911b6ac82f1a27f2f?context=explore).
+This version only runs on the San Diego Super Computer Expanse cluster.
+
 
 ## License
 
-`ExampleModule` is distributed under a modified BSD license available at [https://github.com/genepattern/ExampleModule/blob/v2/LICENSE.](https://github.com/genepattern/ExampleModule/blob/v2/LICENSE)
+`NMFClustering` is distributed under a modified BSD license available at [https://github.com/genepattern/NMFClustering/blob/develop/LICENSE](https://github.com/genepattern/NMFClustering/blob/develop/LICENSE)
 
 ## Version Comments
-<!--For each version of a module, provide a short comment about what was changed in the new version of a module. Version comments consist of 3 parts: a date, a version number, and a short description. The date should be the release date of that version of the module, and the version number should match the version of the module for which it corresponds to. The description can be short, but should be informative (e.g. "added support for log transformed data", or "fixed bug with out of memory exception"). When a user views the documentation, all version comments up to and including the current version will be displayed, and act as a short version history for the module. -->
 
 | Version | Release Date | Description                                 |
 ----------|--------------|---------------------------------------------|
-|  1.4  | May 17, 2021 | Added all GenePattern Team module release requirements and renamed as ExampleModule, from ABasicModule. |
-| 1 | May 1, 2018 | Initial version for team use. |
+| 1 | December 7, 2021 | Initial version for team use. |
