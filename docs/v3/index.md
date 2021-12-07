@@ -50,9 +50,9 @@ Factorization’, Adv. Neural Info. Proc. Syst. 13, 556-562.
 | k.initial * |Initial value of K. | 2 |
 | k.final * | Final value of K. |  5  |
 | num.clusterings * | Number of clusterings to perform for each value of K. | 20 |
-| max.num.iterations * | The maximum number of iterations to perform for each clustering run for each value of K. This number may not be reached depending on the stability of the clustering solution and the settings of stop convergence and stop frequency. | Default: 2000 |
+| max.num.iterations * | The maximum number of iterations to perform for each clustering run for each value of K. This number may not be reached depending on the stability of the clustering solution and the settings of stop convergence and stop frequency. |  2000 |
 | random.seed * | Random seed used to initialize W and H matrices by the random number generator. e.g. 4585, 4567, 5980. This may be set to provide repeatable results for given parameter inputs even though the algorithm is properly random. |  123456789 |
-| output.file.prefix * | Prefix to prepend to all output file names. | <dataset.filename_basename   |
+| output.file.prefix * | Prefix to prepend to all output file names. | <dataset.filename_basename>   |
 | stop.convergence * | How many "no change" checks are needed to stop NMF iterations before max iterations is reached (convergence). Iterations will stop after this many “no change” checks report no changes. | 40 |
 | stop.frequency * | Frequency of "no change" checks. NMFConsensus will check for changes every ‘stop frequency’ iterations. | 10 |
 
@@ -64,14 +64,7 @@ Factorization’, Adv. Neural Info. Proc. Syst. 13, 556-562.
     
 ## Output Files
 
-1. membership.gct: membership results for samples at all values of K
-2. cophenetic.txt: cophenetic values for each K
-3. cophenetic.plot.pdf: plot of cophenetic for each value of K
-4. consensus.k.#.gct (for each value of K): consensus matrix for k=#
-5. consensus.plot.k#.pdf (for each value of K): plot of consensus matrix for k=#
-6. graphs.k#.pdf (for each value of K): Plots of the ordered consensus matrix and ordered
-linkage tree and sample plots of NMF convergence, W matrix, H matrix (ordered and
-unordered), metagenes (ordered and unordered) 
+1. consensus.k.#.gct (for each value of K): consensus matrix for k=#
 
 
 ## Example Data
