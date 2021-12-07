@@ -1,0 +1,49 @@
+SlurmGPUJobRunner:
+        classname: org.genepattern.server.executor.drm.JobExecutor
+        configuration.properties:
+            jobRunnerClassname: org.genepattern.server.executor.slurm.SlurmJobRunner
+            jobRunnerName: SlurmGPUJobRunner
+
+            # interval for polling for job status (in ms)
+            minDelay: 60000
+            useDynamicDelay: false
+
+
+        default.properties:
+            # name of hidden log file added to each job result directory
+            job.logFile: ".rte.out"
+            java_flags: -Xmx512m -Dhttp.proxyHost=<http.proxyHost> -Dhttp.proxyPort=<http.proxyPort>
+            #
+            useDynamicDelay: false
+            minDelay: 60000
+            "remote.exec.prefix": "/expanse/projects/mesirovlab/genepattern/servers/ucsd.prod/resources/wrapper_scripts/run-on-expanse.sh  "
+            # for SLURM the queue maps to the partition in slurm-speak
+            "job.queue": "gpu-shared"
+            "job.commandPrefix": ""
+            # next line will be customized during installation
+
+            "job.workingDir": "<jobs>/<job_id>"
+            "slurm.account": "csd687"
+            "slurm.sbatch.prefix": " "
+            "slurm.additional.command": "echo ${HOSTNAME} > host.txt"
+
+            "slurm.gpu.memory": "186G"
+            "slurm.ntasks.per.node": "2"
+            "slurm.ngpus": "2"
+            "slurm.nnodes": "1"
+            "slurm.ntask.per.node": "2"
+            "slurm.cpus.per.task": 10
+
+            # the rodeo will be rewritten as stampede in the sbatch file
+            "path.to.replace": "/expanse/projects/mesirovlab/"
+            "path.replaced.with": "/expanse/projects/mesirovlab/"
+
+            "singularity": "singularity"
+            "job.workingDir": "<jobs>/<job_id>"
+            ## default <java> substitution
+            java: "java"
+            ## default <perl> substitution
+            perl: "perl"
+            ## default <python_3.6> in substitution
+            python_3.6: "python3"
+
