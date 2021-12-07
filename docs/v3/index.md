@@ -46,11 +46,6 @@ Factorization’, Adv. Neural Info. Proc. Syst. 13, 556-562.
 
 | Name | Description <!--short description--> | Default Value |
 ---------|--------------|----------------
-| filename * |  The file to be read in txt format |
-| add_custom_message * | Whether or not to add a custom message. | False |
-| message_to_add  | What message to add (if any) |
-| output_filename * | The basename to use for output file (no need to add ".txt" at the end) |
-
 | dataset.filename * | Input dataset (gct) | |
 | k.initial * |Initial value of K. | 2 |
 | k.final * | Final value of K. |  5  |
