@@ -1,2 +1,6 @@
-# ExampleModule
-This is an example GenePattern module written in Python 3. It has its own module-specific Docker image, based on the GenePattern Python 3 image. This module specific image contains the source files for better reproducibility and portability. It can be used as a template for future modules.
+# NMFClustering
+
+This is a re-implementation of the NMFConsensus module that runs on GPU accelerated nodes on the San Diego Super Computer Center's Expanse system.  It may be viable on other GPU environments but it has not been tested for portability and there are not immediate plans to do so.
+
+
+
