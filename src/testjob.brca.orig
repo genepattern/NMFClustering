@@ -1,0 +1,44 @@
+#!/bin/sh
+#SBATCH -o scheduler_stdout.txt.%j
+#SBATCH -e scheduler_stderr.txt.%j
+#SBATCH --partition=gpu-shared
+#SBATCH -J alextest
+#SBATCH -t 02:00:00
+#SBATCH --mail-user=kenneth@sdsc.edu
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH -A csd687
+# Expanse GPU nodes have 4 GPUs, 40 CPUs, 384GB memory
+#SBATCH --gpus=2
+#SBATCH --nodes=1              # Total number of nodes requested (16 cores/node)
+#SBATCH --cpus-per-task=10
+#SBATCH --ntasks-per-node=2             # Total number of mpi tasks requested
+#SBATCH --mem=186G
+#SBATCH --no-requeue
+
+export ARBDIR=/expanse/lustre/projects/ddp242/kenneth/tedrun
+#export RUNDIR=/expanse/lustre/projects/ddp242/kenneth/tedrun
+export RUNDIR=/expanse/projects/mesirovlab/genepattern/servers/nmf-gpu-2/job_x
+module purge
+module load slurm/expanse/20.02.3
+module load gpu/0.15.4
+module load openmpi/4.0.4
+module load cuda10.2/toolkit/10.2.89
+export CUDA_PATH=${CUDA_HOME}
+export SM_VERSIONS="70 70"
+export DBG=1
+unset DBG
+export VERBOSE=3
+unset VERBOSE
+export SYNC_TRANSF=1
+export FIXED_INIT=1
+export CPU_RANDOM=1
+export PATH=${ARBDIR}/install/bin:$PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${ARBDIR}/install/lib
+
+export JOBDIR=${RUNDIR}/job.${SLURM_JOB_ID}
+mkdir ${JOBDIR}
+cd ${JOBDIR}
+echo Job starting at `date`
+${ARBDIR}/install/runit/runit --jobdir=${JOBDIR} --gpuprogrampath=${ARBDIR}/install/bin/NMF_mGPU --inputfile=${RUNDIR}/BRCA_DESeq2_normalized_20783x40.gct --mink=2 --maxk=9  --startseed=0 --seeds=100 --interval=10 --consecutive=40 --maxiterations=2000 --outputfileprefix=BRCA_DESeq2
+echo Job done at `date`
