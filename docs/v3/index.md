@@ -6,7 +6,7 @@
 **Authors**: Pablo Tamayo (Broad Institute)  with
 contributions from Jean-Philippe Brunet(Broad Institute), Kenneth Yoshimoto (San Diego Supercomputing Center) and Ted Liefeld (University of California San Diego). Parallel NMF Implementation from https://github.com/bioinfo-cnb/bionmf-gpu
 
-**Contact**: [Forum Link](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!forum/genepattern-help)
+**Contact**: [Geneattern Help Forum](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!forum/genepattern-help)
 
 
 ## Summary
@@ -14,6 +14,8 @@ contributions from Jean-Philippe Brunet(Broad Institute), Kenneth Yoshimoto (San
 Non-negative matrix factorization (NMF) is an unsupervised learning algorithm [1]
 that has been shown to identify molecular patterns when applied to gene expression data [2].
 Rather than separating gene clusters based on distance computation, NMF detects contextdependent patterns of gene expression in complex biological systems.
+
+
 The basic principle of dimensionality reduction via matrix factorization operates as follows:
 given an N x M data matrix A with non-negative entries, the NMF algorithm iteratively
 computes an approximation, A ~ WH, where W is an N x k matrix, H is a k x M matrix, and
@@ -25,7 +27,7 @@ iteratively updated to minimize the Euclidean distance between V and WH or a div
 norm [3]. The program also computes row and column factor memberships according to
 maximum amplitudes. This membership information is also used to sort the output matrices
 according the row and column membership (the row and columns are then relabeled:
-<name>_f<NMF factor>.
+\<name\>_f\<NMF factor\>.
 
 
 <!-- appropriate papers should be cited here -->
